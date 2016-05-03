@@ -2,7 +2,7 @@
   "name": "fushigi-no-sakaba",
   "version": "0.0.0",
   "description": "description",
-  "main": "js/main.min.js",
+  "main": "app.js",
   "engines": {
     "node": ">=4.2.4"
   },
@@ -27,7 +27,6 @@
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
     "gulp-babel": "^6.1.0",
     "gulp-decodecode": "^0.1.0",
-    "gulp-jade": "^1.1.0",
     "gulp-pleeease": "^2.0.2",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.2.0",
@@ -41,6 +40,9 @@
     ]
   },
   "dependencies": {
-    "bower": "^1.7.7"
+    "bower": "^1.7.7",
+    "express": "^4.13.4",
+    "jade": "^0.27.7",
+    "socket.io": "^0.9.13"
   }
 }

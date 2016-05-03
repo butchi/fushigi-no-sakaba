@@ -2,7 +2,7 @@
   "name": "fushigi-no-sakaba",
   "version": "0.0.0",
   "description": "description",
-  "main": "js/main.min.js",
+  "main": "app.js",
   "authors": [
     "IWABUCHI Yuuki"
   ],
