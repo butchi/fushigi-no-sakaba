@@ -1,0 +1,33 @@
+extends layout
+
+block append vars
+  - var pageId = 'register'
+
+block main
+  main
+    h1 ユーザー登録
+
+    if locals.profile
+      p 更新
+    else
+      p 新規
+
+    form(method="POST", action="/api/update", name="form-profile")
+      input(type="hidden", name="hidden-key", value= hidden_key)
+      div.item
+        .title
+          | ユーザー名
+        .input
+          input(type="text", name="screen-name", placeholder="名前")
+      div.item
+        .title
+          | Facebookアカウント（URL）
+        .input
+          input(type="text", name="facebook-url", placeholder="https://www.facebook.com/sakaba.taro")
+      div.item
+        .title
+          | 自己紹介
+        .input
+          textarea(name="message", placeholder="自己紹介文")
+      div.submit
+        input(type="submit", value="登録")

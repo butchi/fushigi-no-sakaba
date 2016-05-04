@@ -4,7 +4,7 @@
   "description": "description",
   "main": "app.js",
   "engines": {
-    "node": ">=4.2.4"
+    "node": ">=6.0.0"
   },
   "scripts": {
     "start": "gulp",
@@ -40,9 +40,14 @@
     ]
   },
   "dependencies": {
+    "body-parser": "^1.15.0",
     "bower": "^1.7.7",
+    "cookie": "^0.2.3",
     "express": "^4.13.4",
     "jade": "^0.27.7",
+    "lodash": "^4.11.2",
+    "puid": "^1.0.5",
+    "shortid": "^2.2.6",
     "socket.io": "^0.9.13"
   }
 }

@@ -1,0 +1,20 @@
+extends layout
+
+block append vars
+  - var pageId = 'profile'
+  - var title = 'プロフィール'
+
+block main
+  main
+    h1 プロフィール
+
+    if locals.profile
+      dl
+        dt 名前
+        dd= profile['screen-name']
+
+        dt URL
+        dd
+          a(href="#{profile['facebook-url']}")= profile['facebook-url']
+    else
+      p ユーザーが登録されていません

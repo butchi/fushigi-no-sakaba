@@ -7,7 +7,6 @@ pleeease = require 'gulp-pleeease'
 browserify = require 'browserify'
 babelify = require 'babelify'
 debowerify = require 'debowerify'
-jade = require 'gulp-jade'
 rename = require 'gulp-rename'
 uglify = require 'gulp-uglify'
 decodecode = require 'gulp-decodecode'
@@ -16,15 +15,15 @@ browserSync = require 'browser-sync'
 SRC = './src'
 DEST = './public'
 
-# html
-gulp.task 'jade', () ->
-  return gulp.src("#{SRC}/jade/*.jade")
-    .pipe jade
-      # locals: locals,
-      pretty: true,
-    .pipe gulp.dest "#{DEST}"
+# # html
+# gulp.task 'jade', () ->
+#   return gulp.src("#{SRC}/jade/*.jade")
+#     .pipe jade
+#       # locals: locals,
+#       pretty: true,
+#     .pipe gulp.dest "#{DEST}"
 
-gulp.task 'html', gulp.series('jade')
+# gulp.task 'html', gulp.series('jade')
 
 gulp.task 'sass', () ->
   gulp.src "#{SRC}/scss/style.scss"
@@ -87,9 +86,10 @@ gulp.task 'browser-sync' , () ->
 
   gulp.watch(["#{SRC}/scss/**/*.scss"], gulp.series('sass', browserSync.reload));
   gulp.watch(["#{SRC}/js/**/*.js"], gulp.series('browserify', browserSync.reload));
-  gulp.watch(["#{SRC}/jade/**/*.jade"], gulp.series('jade', browserSync.reload));
+  # gulp.watch(["#{SRC}/jade/**/*.jade"], gulp.series('jade', browserSync.reload));
 
 gulp.task('serve', gulp.series('browser-sync'));
 
-gulp.task('build', gulp.parallel('css', 'js', 'html'));
+gulp.task('build', gulp.parallel('css', 'js'));
+# gulp.task('build', gulp.parallel('css', 'js', 'html'));
 gulp.task 'default', gulp.series('build', 'serve');
