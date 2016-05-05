@@ -84,10 +84,7 @@ app.get('/user/:id', (req, res) => {
       }
     } else {
       if(user.profile) {
-        console.log('render: profile');
-        res.render('profile', {
-          profile: user.profile,
-        });
+        res.end('ユーザー登録を完了してください');
       } else {
         let serialized_cookie = cookie.serialize(cookieKeyName, user.cookie_id, {
           maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
