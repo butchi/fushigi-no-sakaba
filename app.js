@@ -98,8 +98,6 @@ app.get('/user/:id', (req, res) => {
           serialized_cookie
         ]);
 
-        console.log('current cookie: ', req.headers.cookie);
-
         console.log('render: register / new');
         res.render('register', {
           hidden_key: addHiddenKey(userId),
