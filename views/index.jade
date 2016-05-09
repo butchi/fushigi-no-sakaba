@@ -1,0 +1,22 @@
+extends layout
+
+block append vars
+  - var title = '不思議の酒場〜スマホで乾杯〜'
+  - var pageId = 'top'
+
+block main
+  main
+    h1 不思議の酒場〜スマホで乾杯〜
+
+    dl
+      if locals.userId
+        dt ID
+        dd= userId
+
+      if locals.profile
+        dt 名前
+        dd= profile['screen-name']
+
+        dt URL
+        dd
+          a(href="#{profile['facebook-url']}")= profile['facebook-url']

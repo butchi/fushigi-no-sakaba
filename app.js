@@ -55,6 +55,35 @@ _(10).times(() => {
 // ユーザーID確認
 console.log(userLi);
 
+app.get('/', (req, res) => {
+  var cookieUser;
+  var cookiePass;
+
+  try {
+    cookieUser = cookie.parse(req.headers.cookie)[cookieUserKeyName];
+    cookiePass = cookie.parse(req.headers.cookie)[cookiePassKeyName];
+  } catch(e) {
+  }
+
+  let user = userLi[cookieUser];
+
+  if(user && cookiePass && cookiePass === user.cookiePass) {
+    if(user.profile) {
+      console.log('render: top');
+      res.render('index', {
+        userId: cookieUser,
+        profile: user.profile,
+      });
+    } else {
+      res.redirect(302, `/user/${cookieUser}`);
+    }
+  } else {
+    res.render('error', {
+      message: '自分のジョッキのQRコードを読み取ってプロフィールを完成させてください',
+    });
+  }
+});
+
 app.get('/user/:id', (req, res) => {
   var cookieUser;
   var cookiePass;
@@ -102,7 +131,7 @@ app.get('/user/:id', (req, res) => {
             message: 'まだ乾杯できません。自分のQRコードを読み取り、ユーザー登録を完了させてください',
           });
         } else {
-          let serializedCookieUser = cookie.serialize(cookieUserKeyName, user.cookieUser, {
+          let serializedCookieUser = cookie.serialize(cookieUserKeyName, userId, {
             maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
             path: '/',
           });
@@ -110,6 +139,8 @@ app.get('/user/:id', (req, res) => {
             maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
             path: '/',
           });
+
+          console.log(serializedCookieUser, serializedCookiePass);
 
           user.joinedAt = Date.now();
 
