@@ -16,7 +16,8 @@ var bodyParser = require('body-parser');
 var cookiePuid = new Puid();
 var hiddenKeyPuid = new Puid();
 
-const cookieKeyName = 'sakabacookieid';
+const cookieUser = 'sakabauser';
+const cookiePass = 'sakabapass';
 
 var userLi = {};
 
@@ -46,8 +47,8 @@ app.use(bodyParser());
 // ユーザーIDを10名分発行
 _(10).times(() => {
   userLi[shortid.generate()] = {
-    generated_at: (new Date()).getTime(),
-    cookie_id: cookiePuid.generate(),
+    generatedAt: Date.now(),
+    cookiePass: cookiePuid.generate(),
   };
 });
 
@@ -55,49 +56,62 @@ _(10).times(() => {
 console.log(userLi);
 
 app.get('/user/:id', (req, res) => {
-  var cookieId;
+  var cookieUser;
+  var cookiePass;
 
   let userId = req.params.id;
   let user = userLi[userId];
   if(user) {
     try {
-      cookieId = cookie.parse(req.headers.cookie)[cookieKeyName];
+      cookieUser = cookie.parse(req.headers.cookie)[cookieuser];
+      cookiePass = cookie.parse(req.headers.cookie)[cookiePass];
     } catch(e) {
     }
 
-    if(cookieId) {
-      if(cookieId === user.cookie_id) {
+    if(cookiePass) {
+      if(cookiePass === user.cookiePass) {
         console.log('render: register / update');
         res.render('register', {
-          hidden_key: addHiddenKey(userId),
+          hiddenKey: addHiddenKey(userId),
           profile: user.profile,
         });
       } else {
-        if(user.profile) {
-          console.log('render: profile');
-          res.render('profile', {
-            profile: user.profile,
-          });
+        if(user.joinedAt) {
+          if(user.profile) {
+            console.log('render: profile');
+            res.render('profile', {
+              profile: user.profile,
+            });
+          } else {
+            res.render('404');
+          }
         } else {
           res.render('404');
         }
       }
     } else {
-      if(user.profile) {
-        res.end('ユーザー登録を完了してください');
+      if(user.joinedAt) {
+        res.end('ユーザー登録が完了していません');
       } else {
-        let serialized_cookie = cookie.serialize(cookieKeyName, user.cookie_id, {
+        let serializedCookieUser = cookie.serialize(cookieUser, user.cookieUser, {
+          maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
+          path: '/',
+        });
+        let serializedCookiePass = cookie.serialize(cookiePass, user.cookiePass, {
           maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
           path: '/',
         });
 
+        user.joinedAt = Date.now();
+
         res.setHeader("Set-Cookie", [
-          serialized_cookie
+          serializedCookieUser,
+          serializedCookiePass
         ]);
 
         console.log('render: register / new');
         res.render('register', {
-          hidden_key: addHiddenKey(userId),
+          hiddenKey: addHiddenKey(userId),
         });
       }
     }
@@ -107,22 +121,22 @@ app.get('/user/:id', (req, res) => {
 });
 
 app.get('/delete/:id', (req, res) => {
-  var cookieId;
+  var cookiePass;
 
   let userId = req.params.id;
   let user = userLi[userId];
   if(user) {
     try {
-      cookieId = cookie.parse(req.headers.cookie)[cookieKeyName];
+      cookiePass = cookie.parse(req.headers.cookie)[cookiePass];
     } catch(e) {
     }
 
-    if(cookieId && cookieId === user.cookie_id) {
+    if(cookiePass && cookiePass === user.cookiePass) {
       console.log('delete user');
 
       delete user.profile;
 
-      res.clearCookie(cookieKeyName);
+      res.clearCookie(cookiePass);
 
       console.log('current users: ', userLi);
     } else {
@@ -135,8 +149,9 @@ app.get('/delete/:id', (req, res) => {
 
 app.get('/check', (req, res) => {
   try {
-    var cookieId = cookie.parse(req.headers.cookie)[cookieKeyName];
-    res.end('現在のキー: ' + cookieId);
+    var cookieUser = cookie.parse(req.headers.cookie)[cookieUser];
+    var cookiePass = cookie.parse(req.headers.cookie)[cookiePass];
+    res.end(`ユーザー名: ${cookieUser}, 現在のキー: ${cookiePass}`);
   } catch(e) {
     res.end('キーがありません');
   }
@@ -145,7 +160,7 @@ app.get('/check', (req, res) => {
 app.get('/clear', (req, res) => {
   console.log('clear key');
 
-  res.clearCookie(cookieKeyName);
+  res.clearCookie(cookiePass);
   res.end('キーを削除しました');
 });
 
