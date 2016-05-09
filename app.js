@@ -16,8 +16,8 @@ var bodyParser = require('body-parser');
 var cookiePuid = new Puid();
 var hiddenKeyPuid = new Puid();
 
-const cookieUser = 'sakabauser';
-const cookiePass = 'sakabapass';
+const cookieUserKeyName = 'sakabauser';
+const cookiePassKeyName = 'sakabapass';
 
 var userLi = {};
 
@@ -61,62 +61,66 @@ app.get('/user/:id', (req, res) => {
 
   let userId = req.params.id;
   let user = userLi[userId];
-  if(user) {
-    try {
-      cookieUser = cookie.parse(req.headers.cookie)[cookieuser];
-      cookiePass = cookie.parse(req.headers.cookie)[cookiePass];
-    } catch(e) {
-    }
 
-    if(cookiePass) {
+  try {
+    cookieUser = cookie.parse(req.headers.cookie)[cookieUserKeyName];
+    cookiePass = cookie.parse(req.headers.cookie)[cookiePassKeyName];
+  } catch(e) {
+  }
+
+  if(cookieUser) {
+    if(user) {
       if(cookiePass === user.cookiePass) {
+        // 更新画面に飛ばしているが、トップページに飛ばして更新フォームを置いた方がいいかも
         console.log('render: register / update');
         res.render('register', {
           hiddenKey: addHiddenKey(userId),
           profile: user.profile,
         });
       } else {
-        if(user.joinedAt) {
-          if(user.profile) {
+        if(user.profile) {
             console.log('render: profile');
             res.render('profile', {
               profile: user.profile,
             });
-          } else {
-            res.render('404');
-          }
         } else {
-          res.render('404');
+          res.end('まだ乾杯できません。プロフィールを完成してもらってください');
         }
-      }
-    } else {
-      if(user.joinedAt) {
-        res.end('ユーザー登録が完了していません');
-      } else {
-        let serializedCookieUser = cookie.serialize(cookieUser, user.cookieUser, {
-          maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
-          path: '/',
-        });
-        let serializedCookiePass = cookie.serialize(cookiePass, user.cookiePass, {
-          maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
-          path: '/',
-        });
-
-        user.joinedAt = Date.now();
-
-        res.setHeader("Set-Cookie", [
-          serializedCookieUser,
-          serializedCookiePass
-        ]);
-
-        console.log('render: register / new');
-        res.render('register', {
-          hiddenKey: addHiddenKey(userId),
-        });
       }
     }
   } else {
-    res.render('404');
+    if(user) {
+      if(cookiePass === user.cookiePass) {
+        res.end('まだ乾杯できません。自分のQRコードを読み取り、プロフィールを完成させてください');
+      } else {
+        if(user.joinedAt) {
+          res.end('まだ乾杯できません。自分のQRコードを読み取り、ユーザー登録を完了させてください');
+        } else {
+          let serializedCookieUser = cookie.serialize(cookieUserKeyName, user.cookieUser, {
+            maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
+            path: '/',
+          });
+          let serializedCookiePass = cookie.serialize(cookiePassKeyName, user.cookiePass, {
+            maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
+            path: '/',
+          });
+
+          user.joinedAt = Date.now();
+
+          res.setHeader("Set-Cookie", [
+            serializedCookieUser,
+            serializedCookiePass
+          ]);
+
+          console.log('render: register / new');
+          res.render('register', {
+            hiddenKey: addHiddenKey(userId),
+          });
+        }
+      }
+    } else {
+      res.render('404');
+    }
   }
 });
 
@@ -127,7 +131,7 @@ app.get('/delete/:id', (req, res) => {
   let user = userLi[userId];
   if(user) {
     try {
-      cookiePass = cookie.parse(req.headers.cookie)[cookiePass];
+      cookiePass = cookie.parse(req.headers.cookie)[cookiePassKeyName];
     } catch(e) {
     }
 
@@ -136,7 +140,7 @@ app.get('/delete/:id', (req, res) => {
 
       delete user.profile;
 
-      res.clearCookie(cookiePass);
+      res.clearCookie(cookiePassKeyName);
 
       console.log('current users: ', userLi);
     } else {
@@ -160,7 +164,8 @@ app.get('/check', (req, res) => {
 app.get('/clear', (req, res) => {
   console.log('clear key');
 
-  res.clearCookie(cookiePass);
+  res.clearCookie(cookieUserKeyName);
+  res.clearCookie(cookiePassKeyName);
   res.end('キーを削除しました');
 });
 
