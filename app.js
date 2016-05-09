@@ -84,17 +84,23 @@ app.get('/user/:id', (req, res) => {
               profile: user.profile,
             });
         } else {
-          res.end('まだ乾杯できません。プロフィールを完成してもらってください');
+          res.render('error', {
+            message: 'まだ乾杯できません。プロフィールを完成してもらってください',
+          });
         }
       }
     }
   } else {
     if(user) {
       if(cookiePass === user.cookiePass) {
-        res.end('まだ乾杯できません。自分のQRコードを読み取り、プロフィールを完成させてください');
+        res.render('error', {
+          message: 'まだ乾杯できません。自分のQRコードを読み取り、プロフィールを完成させてください',
+        });
       } else {
         if(user.joinedAt) {
-          res.end('まだ乾杯できません。自分のQRコードを読み取り、ユーザー登録を完了させてください');
+          res.render('error', {
+            message: 'まだ乾杯できません。自分のQRコードを読み取り、ユーザー登録を完了させてください',
+          });
         } else {
           let serializedCookieUser = cookie.serialize(cookieUserKeyName, user.cookieUser, {
             maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
@@ -119,7 +125,7 @@ app.get('/user/:id', (req, res) => {
         }
       }
     } else {
-      res.render('404');
+      res.render('error');
     }
   }
 });
@@ -144,10 +150,10 @@ app.get('/delete/:id', (req, res) => {
 
       console.log('current users: ', userLi);
     } else {
-      res.render('404');
+      res.render('error');
     }
   } else {
-    res.render('404');
+    res.render('error');
   }
 });
 

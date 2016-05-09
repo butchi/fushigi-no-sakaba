@@ -1,0 +1,18 @@
+extends layout
+
+block append vars
+  - var pageId = 'error'
+  - var title = 'エラー'
+
+block main
+  main
+    if locals.message
+      h1
+        | エラー
+      if locals.errorCode
+        p= errorCode
+      p= message
+
+    else
+      h1
+        | 404 not found
