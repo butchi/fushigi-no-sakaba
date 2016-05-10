@@ -113,6 +113,7 @@ app.get('/user/:id', (req, res) => {
               profile: user.profile,
             });
         } else {
+          // 複数アカウントで新規登録画面を開くとここに飛んできてしまう
           res.render('error', {
             message: 'まだ乾杯できません。プロフィールを完成してもらってください',
           });
@@ -208,18 +209,54 @@ app.get('/clear', (req, res) => {
 
 app.post('/api/update', (req, res) => {
   var userId = hiddenKeyLi[req.body['hidden-key']];
+  var error = {};
+  var validFlag = true;
 
-  console.log('user id: ', userId);
-
-  userLi[userId].profile = {
-    "screen-name": req.body['screen-name'],
-    "facebook-url": req.body['facebook-url'],
-    "screen-name": req.body['screen-name'],
-    "message": req.body['message'],
+  function isValidTwitterId(str) {
+    return !!str.match(/^[0-9a-z_]{1,15}$/i);
   }
 
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('success');
+  function isValidFacebookUrl(str) {
+    return !!str.match(/https:\/\/www\.facebook\.com\/+/i);
+  }
+
+  var screenName = req.body['screen-name'];
+  var facebookUrl = req.body['facebook-url'];
+  var twitterId = req.body['twitter-id'];
+  var message = req.body['message'];
+
+  if(screenName === '') {
+    error['screen-name'] = 'この項目は必須です';
+    validFlag = false;
+  }
+  if(facebookUrl !== '' && !isValidFacebookUrl(facebookUrl)) {
+    error['facebook-url'] = '不正な値です';
+    validFlag = false;
+  }
+  if(twitterId !== '' && !isValidTwitterId(twitterId)) {
+    error['twitter-id'] = '不正な値です';
+    validFlag = false;
+  }
+  if(message === '') {
+    error['message'] = 'この項目は必須です';
+    validFlag = false;
+  }
+
+  if(validFlag) {
+    userLi[userId].profile = {
+      "screen-name": screenName,
+      "facebook-url": facebookUrl,
+      "twitter-id": twitterId,
+      "message": message,
+    };
+
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end('{"result": "success"}');
+  } else {
+    res.status(200).send({
+      error: error,
+    });
+  }
 });
 
 // app.configure('development', function(){

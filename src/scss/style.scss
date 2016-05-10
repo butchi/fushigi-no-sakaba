@@ -13,3 +13,21 @@ body {
 main {
   display: block;
 }
+
+body.page-register {
+    [name="form-profile"] {
+      .item
+        .title {
+        }
+        .input {
+        }
+        .note {
+          font-size: 1.2rem;
+          color: #999;
+        }
+        .message {
+          font-size: 1.2rem;
+          color: #f00;
+        }
+    }
+}

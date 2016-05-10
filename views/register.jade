@@ -8,6 +8,10 @@ block main
     h1 ユーザー登録
 
     if locals.profile
+      - var screenName = profile['screen-name']
+      - var facebookUrl = profile['facebook-url']
+      - var twitterId = profile['twitter-id']
+      - var message = profile['message']
       p 更新
     else
       p 新規
@@ -16,18 +20,36 @@ block main
       input(type="hidden", name="hidden-key", value= hiddenKey)
       div.item
         .title
-          | ユーザー名
+          | 名前
         .input
-          input(type="text", name="screen-name", placeholder="名前")
+          input(type="text", name="screen-name", placeholder="名前", value= screenName)
+        .note
+          | （必須）
+        .message
       div.item
         .title
           | Facebookアカウント（URL）
         .input
-          input(type="text", name="facebook-url", placeholder="https://www.facebook.com/sakaba.taro")
+          input(type="text", name="facebook-url", placeholder="https://www.facebook.com/sakaba.taro", value= facebookUrl)
+        .note
+          | （任意）
+        .message
+      div.item
+        .title
+          | Twitterアカウント（ID）
+        .input
+          | @
+          input(type="text", name="twitter-id", placeholder="sakaba_taro", value= twitterId)
+        .note
+          | （任意）
+        .message
       div.item
         .title
           | 自己紹介
         .input
-          textarea(name="message", placeholder="自己紹介文")
+          textarea(name="message", placeholder="自己紹介文")= message
+        .note
+          | （必須）
+        .message
       div.submit
         input(type="submit", value="登録")

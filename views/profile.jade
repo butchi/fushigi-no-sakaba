@@ -13,8 +13,18 @@ block main
         dt 名前
         dd= profile['screen-name']
 
-        dt URL
-        dd
-          a(href="#{profile['facebook-url']}")= profile['facebook-url']
+        dt 自己紹介
+        dd= profile['message']
+
+      ul.sns
+        if profile['facebook-url']
+          li.item.facebook
+            a(href="#{profile['facebook-url']}")
+              | Facebook
+        if profile['twitter-id']
+          li.item.facebook
+            a(href="https://twitter.com/#{profile['twitter-id']}")
+              | Twitter
+
     else
       p ユーザーが登録されていません

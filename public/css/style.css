@@ -10,3 +10,13 @@ body {
 
 main {
   display: block; }
+
+body.page-register [name="form-profile"] .note {
+  font-size: 12px;
+  font-size: 1.2rem;
+  color: #999; }
+
+body.page-register [name="form-profile"] .message {
+  font-size: 12px;
+  font-size: 1.2rem;
+  color: #f00; }
