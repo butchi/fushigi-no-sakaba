@@ -48,6 +48,10 @@ $(function () {
       });
     });
   }
+
+  if ($body.hasClass('page-profile')) {
+    init();
+  }
 });
 
 console.log('Thanks, world!');

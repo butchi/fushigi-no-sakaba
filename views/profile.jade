@@ -4,6 +4,40 @@ block append vars
   - var pageId = 'profile'
   - var title = 'プロフィール'
 
+block prepend js
+  script(src="http://code.createjs.com/easeljs-0.7.0.min.js")
+  script(src="http://code.createjs.com/tweenjs-0.5.0.min.js")
+  script(src="http://code.createjs.com/movieclip-0.7.0.min.js")
+  script(src="http://code.createjs.com/preloadjs-0.4.0.min.js")
+  script(src="/js/kanpai.js")
+  script.
+    var canvas, stage, exportRoot;
+
+    function init() {
+      canvas = document.getElementById("canvas");
+      images = images||{};
+
+      var loader = new createjs.LoadQueue(false);
+      loader.addEventListener("fileload", handleFileLoad);
+      loader.addEventListener("complete", handleComplete);
+      loader.loadManifest(lib.properties.manifest);
+    }
+
+    function handleFileLoad(evt) {
+      if (evt.item.type == "image") { images[evt.item.id] = evt.result; }
+    }
+
+    function handleComplete() {
+      exportRoot = new lib.kanpai();
+
+      stage = new createjs.Stage(canvas);
+      stage.addChild(exportRoot);
+      stage.update();
+
+      createjs.Ticker.setFPS(lib.properties.fps);
+      createjs.Ticker.addEventListener("tick", stage);
+    }
+
 block main
   main
     h1 プロフィール
@@ -28,3 +62,6 @@ block main
 
     else
       p ユーザーが登録されていません
+
+  .animation
+    canvas(id="canvas", width="375", height="375")
