@@ -12,14 +12,17 @@ var shortid = require('shortid');
 var Puid = require('puid');
 var cookie = require('cookie');
 var bodyParser = require('body-parser');
+var MongoClient = require('mongodb').MongoClient;
 
 var cookiePuid = new Puid();
 var hiddenKeyPuid = new Puid();
 
+const host = '127.0.0.1';
+const dbName = 'nodedb';
+const dbPath = `mongodb://${host}/${dbName}`;
+
 const cookieUserKeyName = 'sakabauser';
 const cookiePassKeyName = 'sakabapass';
-
-var userLi = {};
 
 var hiddenKeyLi = {};
 
@@ -45,15 +48,41 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser());
 
 // ユーザーIDを10名分発行
-_(10).times(() => {
-  userLi[shortid.generate()] = {
-    generatedAt: Date.now(),
-    cookiePass: cookiePuid.generate(),
-  };
+MongoClient.connect(dbPath, (err, db) => {
+  if(err) {
+    return console.dir(err);
+  }
+
+  var userArr = [];
+  _(10).times(() => {
+    var user = {
+      id: shortid.generate(),
+      generatedAt: Date.now(),
+      cookiePass: cookiePuid.generate(),
+    };
+
+    userArr.push(user);
+  });
+
+  db.collection('users', (err, collection) => {
+    collection.insert(userArr, (err, result) => {
+      // console.dir(result);
+    });
+  });
 });
 
 // ユーザーID確認
-console.log(userLi);
+MongoClient.connect(dbPath, (err, db) => {
+  if(err) {
+    return console.dir(err);
+  }
+
+  db.collection('users', (err, collection) => {
+    collection.find().toArray((err, items) => {
+      console.log(items);
+    });
+  });
+});
 
 app.get('/', (req, res) => {
   var cookieUser;
@@ -65,23 +94,35 @@ app.get('/', (req, res) => {
   } catch(e) {
   }
 
-  let user = userLi[cookieUser];
-
-  if(user && cookiePass && cookiePass === user.cookiePass) {
-    if(user.profile) {
-      console.log('render: top');
-      res.render('index', {
-        userId: cookieUser,
-        profile: user.profile,
-      });
-    } else {
-      res.redirect(302, `/user/${cookieUser}`);
+  MongoClient.connect(dbPath, (err, db) => {
+    if(err) {
+      return console.dir(err);
     }
-  } else {
-    res.render('error', {
-      message: '自分のジョッキのQRコードを読み取ってプロフィールを完成させてください',
+
+    db.collection('users', (err, collection) => {
+      collection.find({id: cookieUser}).toArray(findUserCallback);
     });
-  }
+  });
+
+  let findUserCallback = (err, items) => {
+    let user = items[0];
+
+    if(user && cookiePass && cookiePass === user.cookiePass) {
+      if(user.profile) {
+        console.log('render: top');
+        res.render('index', {
+          userId: cookieUser,
+          profile: user.profile,
+        });
+      } else {
+        res.redirect(302, `/user/${cookieUser}`);
+      }
+    } else {
+      res.render('error', {
+        message: '自分のジョッキのQRコードを読み取ってプロフィールを完成させてください',
+      });
+    }
+  };
 });
 
 app.get('/user/:id', (req, res) => {
@@ -89,7 +130,6 @@ app.get('/user/:id', (req, res) => {
   var cookiePass;
 
   let userId = req.params.id;
-  let user = userLi[userId];
 
   try {
     cookieUser = cookie.parse(req.headers.cookie)[cookieUserKeyName];
@@ -97,96 +137,132 @@ app.get('/user/:id', (req, res) => {
   } catch(e) {
   }
 
-  if(cookieUser) {
-    if(user) {
-      if(cookiePass === user.cookiePass) {
-        // 更新画面に飛ばしているが、トップページに飛ばして更新フォームを置いた方がいいかも
-        console.log('render: register / update');
-        res.render('register', {
-          hiddenKey: addHiddenKey(userId),
-          profile: user.profile,
-        });
-      } else {
-        if(user.profile) {
-            console.log('render: profile');
-            res.render('profile', {
-              profile: user.profile,
-            });
-        } else {
-          // 複数アカウントで新規登録画面を開くとここに飛んできてしまう
-          res.render('error', {
-            message: 'まだ乾杯できません。プロフィールを完成してもらってください',
-          });
-        }
-      }
+  MongoClient.connect(dbPath, (err, db) => {
+    if(err) {
+      return console.dir(err);
     }
-  } else {
-    if(user) {
-      if(cookiePass === user.cookiePass) {
-        res.render('error', {
-          message: 'まだ乾杯できません。自分のQRコードを読み取り、プロフィールを完成させてください',
-        });
-      } else {
-        if(user.joinedAt) {
-          res.render('error', {
-            message: 'まだ乾杯できません。自分のQRコードを読み取り、ユーザー登録を完了させてください',
-          });
-        } else {
-          let serializedCookieUser = cookie.serialize(cookieUserKeyName, userId, {
-            maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
-            path: '/',
-          });
-          let serializedCookiePass = cookie.serialize(cookiePassKeyName, user.cookiePass, {
-            maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
-            path: '/',
-          });
 
-          console.log(serializedCookieUser, serializedCookiePass);
+    db.collection('users', (err, collection) => {
+      collection.find({id: userId}).toArray(findUserCallback);
+    });
+  });
 
-          user.joinedAt = Date.now();
+  let findUserCallback = (err, items) => {
+    let user = items[0];
 
-          res.setHeader("Set-Cookie", [
-            serializedCookieUser,
-            serializedCookiePass
-          ]);
-
-          console.log('render: register / new');
+    if(cookieUser) {
+      if(user) {
+        if(cookiePass === user.cookiePass) {
+          // 更新画面に飛ばしているが、トップページに飛ばして更新フォームを置いた方がいいかも
+          console.log('render: register / update');
           res.render('register', {
             hiddenKey: addHiddenKey(userId),
+            profile: user.profile,
           });
+        } else {
+          if(user.profile) {
+              console.log('render: profile');
+              res.render('profile', {
+                profile: user.profile,
+              });
+          } else {
+            // 複数アカウントで新規登録画面を開くとここに飛んできてしまう
+            res.render('error', {
+              message: 'まだ乾杯できません。プロフィールを完成してもらってください',
+            });
+          }
         }
       }
     } else {
-      res.render('error');
+      if(user) {
+        if(cookiePass === user.cookiePass) {
+          res.render('error', {
+            message: 'まだ乾杯できません。自分のQRコードを読み取り、プロフィールを完成させてください',
+          });
+        } else {
+          if(user.joinedAt) {
+            res.render('error', {
+              message: 'まだ乾杯できません。自分のQRコードを読み取り、ユーザー登録を完了させてください',
+            });
+          } else {
+            let serializedCookieUser = cookie.serialize(cookieUserKeyName, userId, {
+              maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
+              path: '/',
+            });
+            let serializedCookiePass = cookie.serialize(cookiePassKeyName, user.cookiePass, {
+              maxAge : 60 * 60 * 24 * 7, //有効期間を1週間に設定
+              path: '/',
+            });
+
+            console.log(serializedCookieUser, serializedCookiePass);
+
+            user.joinedAt = Date.now();
+
+            res.setHeader("Set-Cookie", [
+              serializedCookieUser,
+              serializedCookiePass
+            ]);
+
+            console.log('render: register / new');
+            res.render('register', {
+              hiddenKey: addHiddenKey(userId),
+            });
+          }
+        }
+      } else {
+        res.render('error');
+      }
     }
   }
+
 });
 
 app.get('/delete/:id', (req, res) => {
   var cookiePass;
 
   let userId = req.params.id;
-  let user = userLi[userId];
-  if(user) {
-    try {
-      cookiePass = cookie.parse(req.headers.cookie)[cookiePassKeyName];
-    } catch(e) {
+
+  MongoClient.connect(dbPath, (err, db) => {
+    if(err) {
+      return console.dir(err);
     }
 
-    if(cookiePass && cookiePass === user.cookiePass) {
-      console.log('delete user');
+    db.collection('users', (err, collection) => {
+      collection.find({id: userId}).toArray(findUserCallback);
+    });
+  });
 
-      delete user.profile;
+  let findUserCallback = (err, items) => {
+    let user = items[0];
 
-      res.clearCookie(cookiePassKeyName);
+    if(user) {
+      try {
+        cookiePass = cookie.parse(req.headers.cookie)[cookiePassKeyName];
+      } catch(e) {
+      }
 
-      console.log('current users: ', userLi);
+      if(cookiePass && cookiePass === user.cookiePass) {
+        console.log('delete user');
+
+        MongoClient.connect(dbPath, (err, db) => {
+          if(err) {
+            return console.dir(err);
+          }
+
+          db.collection('users', (err, collection) => {
+            collection.update({id: userId}, { $set: {profile: null} }, (err, result) => {
+              res.clearCookie(cookiePassKeyName);
+              res.end('ユーザーを削除しました');
+            });
+          });
+        });
+      } else {
+        res.render('error');
+      }
     } else {
       res.render('error');
     }
-  } else {
-    res.render('error');
-  }
+  };
 });
 
 app.get('/check', (req, res) => {
@@ -243,12 +319,24 @@ app.post('/api/update', (req, res) => {
   }
 
   if(validFlag) {
-    userLi[userId].profile = {
+    var profile = {
       "screen-name": screenName,
       "facebook-url": facebookUrl,
       "twitter-id": twitterId,
       "message": message,
     };
+
+    MongoClient.connect(dbPath, (err, db) => {
+      if(err) {
+        return console.dir(err);
+      }
+
+      db.collection('users', (err, collection) => {
+        collection.update({id: userId}, { $set: {profile: profile} }, (err, result) => {
+          // console.dir(result);
+        });
+      });
+    });
 
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end('{"result": "success"}');
@@ -275,6 +363,6 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-server.listen(app.get('port'), function(){
+server.listen(app.get('port'), host, function(){
   console.log("Express server listening on port " + app.get('port'));
 });
