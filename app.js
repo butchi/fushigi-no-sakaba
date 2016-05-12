@@ -13,6 +13,7 @@ var Puid = require('puid');
 var cookie = require('cookie');
 var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
+var basicAuth = require('basic-auth-connect');
 
 var cookiePuid = new Puid();
 var hiddenKeyPuid = new Puid();
@@ -47,30 +48,6 @@ app.locals.pretty = true;
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser());
 
-// ユーザーIDを10名分発行
-MongoClient.connect(dbPath, (err, db) => {
-  if(err) {
-    return console.dir(err);
-  }
-
-  var userArr = [];
-  _(10).times(() => {
-    var user = {
-      id: shortid.generate(),
-      generatedAt: Date.now(),
-      cookiePass: cookiePuid.generate(),
-    };
-
-    userArr.push(user);
-  });
-
-  db.collection('users', (err, collection) => {
-    collection.insert(userArr, (err, result) => {
-      // console.dir(result);
-    });
-  });
-});
-
 // ユーザーID確認
 MongoClient.connect(dbPath, (err, db) => {
   if(err) {
@@ -83,6 +60,80 @@ MongoClient.connect(dbPath, (err, db) => {
     });
   });
 });
+
+app.all('/admin/*', basicAuth(function(user, password) {
+  return user === 'username' && password === 'password';
+}));
+
+app.get('/admin/panel', (req, res) => {
+  res.render('admin/panel');
+});
+
+app.post('/admin/adduser', (req, res) => {
+  var users = req.body['users'];
+
+  if(users) {
+    userIdArr = JSON.parse(users);
+
+    // ユーザーIDを発行
+    MongoClient.connect(dbPath, (err, db) => {
+      if(err) {
+        return console.dir(err);
+      }
+
+      var userArr = [];
+      userIdArr.forEach((id) => {
+        var user = {
+          id: id,
+          generatedAt: Date.now(),
+          cookiePass: cookiePuid.generate(),
+        };
+
+        userArr.push(user);
+      });
+
+      if(!userArr) {
+        res.end('追加なし');
+      }
+
+      db.collection('users', (err, collection) => {
+        collection.insert(userArr, (err, result) => {
+          // console.dir(result);
+          res.end(`追加しました: ${JSON.stringify(result)}`);
+        });
+      });
+    });
+  }
+});
+
+app.post('/admin/updateuser', (req, res) => {
+  var userId = req.body['userid'];
+  var content = req.body['content'];
+
+  try {
+    var contentJson = JSON.parse(content);
+
+    if(contentJson) {
+      MongoClient.connect(dbPath, (err, db) => {
+        if(err) {
+          return console.dir(err);
+        }
+
+        db.collection('users', (err, collection) => {
+          if(err) {
+            return console.dir(err);
+          }
+
+          collection.update({id: userId}, { $set: contentJson }, (err, result) => {
+            res.end(`ユーザーを変更しました: ${JSON.stringify(result)}`);
+          });
+        });
+      });
+    }
+  } catch(e) {
+  }
+});
+
 
 app.get('/', (req, res) => {
   var cookieUser;

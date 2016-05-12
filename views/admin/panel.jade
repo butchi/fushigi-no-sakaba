@@ -1,0 +1,26 @@
+doctype html
+html(lang="ja")
+  head
+    meta(charset='UTF-8')
+
+  body
+    .wrapper
+      h1
+        Admin
+
+      h2
+        | ユーザー追加
+      form(method="POST", action="/admin/adduser", name="adduser")
+        p
+          textarea(name="users", rows="10", cols="50", placeholder='["hoGe", "pIYo"]')
+        input(type="submit")
+
+      h2
+        | ユーザー情報変更
+      form(method="POST", action="/admin/updateuser", name="updateuser")
+        p
+          input(type="text", required, name="userid", placeholder="hoGe")
+        p
+          textarea(name="content", required, rows="10", cols="50", placeholder='{profile: {"screen-name": "ほげほげ", "facebook-url": "https://www.facebook.com/hoGe", "twitter-id": "@hoGe", "message": "メッセージ" }}')
+        p
+          input(type="submit")
