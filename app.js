@@ -12,8 +12,9 @@ var shortid = require('shortid');
 var Puid = require('puid');
 var cookie = require('cookie');
 var bodyParser = require('body-parser');
-var MongoClient = require('mongodb').MongoClient;
 var basicAuth = require('basic-auth-connect');
+
+var mongo_builder = require('./lib/mongo_builder');
 
 var cookiePuid = new Puid();
 var hiddenKeyPuid = new Puid();
@@ -49,11 +50,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser());
 
 // ユーザーID確認
-MongoClient.connect(dbPath, (err, db) => {
-  if(err) {
-    return console.dir(err);
-  }
-
+mongo_builder.ready(dbName, function(db){
+  console.log(db);
   db.collection('users', (err, collection) => {
     collection.find().toArray((err, items) => {
       console.log(items);
@@ -76,11 +74,7 @@ app.post('/admin/adduser', (req, res) => {
     userIdArr = JSON.parse(users);
 
     // ユーザーIDを発行
-    MongoClient.connect(dbPath, (err, db) => {
-      if(err) {
-        return console.dir(err);
-      }
-
+    mongo_builder.ready(dbName, function(db){
       var userArr = [];
       userIdArr.forEach((id) => {
         var user = {
@@ -114,16 +108,8 @@ app.post('/admin/updateuser', (req, res) => {
     var contentJson = JSON.parse(content);
 
     if(contentJson) {
-      MongoClient.connect(dbPath, (err, db) => {
-        if(err) {
-          return console.dir(err);
-        }
-
+      mongo_builder.ready(dbName, function(db){
         db.collection('users', (err, collection) => {
-          if(err) {
-            return console.dir(err);
-          }
-
           collection.update({id: userId}, { $set: contentJson }, (err, result) => {
             res.end(`ユーザーを変更しました: ${JSON.stringify(result)}`);
           });
@@ -145,11 +131,7 @@ app.get('/', (req, res) => {
   } catch(e) {
   }
 
-  MongoClient.connect(dbPath, (err, db) => {
-    if(err) {
-      return console.dir(err);
-    }
-
+  mongo_builder.ready(dbName, function(db){
     db.collection('users', (err, collection) => {
       collection.find({id: cookieUser}).toArray(findUserCallback);
     });
@@ -188,11 +170,7 @@ app.get('/user/:id', (req, res) => {
   } catch(e) {
   }
 
-  MongoClient.connect(dbPath, (err, db) => {
-    if(err) {
-      return console.dir(err);
-    }
-
+  mongo_builder.ready(dbName, function(db){
     db.collection('users', (err, collection) => {
       collection.find({id: userId}).toArray(findUserCallback);
     });
@@ -273,11 +251,7 @@ app.get('/delete/:id', (req, res) => {
 
   let userId = req.params.id;
 
-  MongoClient.connect(dbPath, (err, db) => {
-    if(err) {
-      return console.dir(err);
-    }
-
+  mongo_builder.ready(dbName, function(db){
     db.collection('users', (err, collection) => {
       collection.find({id: userId}).toArray(findUserCallback);
     });
@@ -295,11 +269,7 @@ app.get('/delete/:id', (req, res) => {
       if(cookiePass && cookiePass === user.cookiePass) {
         console.log('delete user');
 
-        MongoClient.connect(dbPath, (err, db) => {
-          if(err) {
-            return console.dir(err);
-          }
-
+        mongo_builder.ready(dbName, function(db){
           db.collection('users', (err, collection) => {
             collection.update({id: userId}, { $set: {profile: null} }, (err, result) => {
               res.clearCookie(cookiePassKeyName);
@@ -377,11 +347,7 @@ app.post('/api/update', (req, res) => {
       "message": message,
     };
 
-    MongoClient.connect(dbPath, (err, db) => {
-      if(err) {
-        return console.dir(err);
-      }
-
+    mongo_builder.ready(dbName, function(db){
       db.collection('users', (err, collection) => {
         collection.update({id: userId}, { $set: {profile: profile} }, (err, result) => {
           // console.dir(result);
