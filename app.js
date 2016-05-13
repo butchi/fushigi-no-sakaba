@@ -392,6 +392,6 @@ app.post('/api/update', (req, res) => {
 //   });
 // });
 
-server.listen(app.get('port'), host, function(){
+server.listen(app.get('port'), process.env.HOST, function(){
   console.log("Express server listening on port " + app.get('port'));
 });
