@@ -26,13 +26,16 @@ block main
               dt 自己紹介
               dd= profile['message']
 
-        if profile['facebook-url'] || profile['twitter-id']
-          .mdl-card__actions.mdl-card--border
+          if profile['facebook-url'] || profile['twitter-id']
             if profile['facebook-url']
               .item.facebook
-                a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="#{profile['facebook-url']}")
+                a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="#{profile['facebook-url']}", target="_blank")
                   | Facebook
             if profile['twitter-id']
               .item.facebook
-                a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="https://twitter.com/#{profile['twitter-id']}")
+                a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="https://twitter.com/#{profile['twitter-id']}", target="_blank")
                   | Twitter
+
+        .mdl-card__actions.mdl-card--border
+          a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="/user/#{locals.userId}", target="_blank")
+            | 編集
