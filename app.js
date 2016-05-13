@@ -67,6 +67,18 @@ app.get('/admin/panel', (req, res) => {
   res.render('admin/panel');
 });
 
+app.get('/admin/list', (req, res) => {
+  mongo_builder.ready(dbName, function(db){
+    db.collection('users', (err, collection) => {
+      collection.find().toArray(findUserCallback);
+    });
+  });
+
+  let findUserCallback = (err, items) => {
+    res.end(JSON.stringify(items));
+  };
+});
+
 app.post('/admin/adduser', (req, res) => {
   var users = req.body['users'];
 
