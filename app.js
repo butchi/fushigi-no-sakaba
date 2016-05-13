@@ -5,7 +5,7 @@ var path = require('path');
 
 var app = express();
 var server = http.createServer(app);
-var io = sockets.listen(server);
+// var io = sockets.listen(server);
 
 var _ = require('lodash');
 var shortid = require('shortid');
