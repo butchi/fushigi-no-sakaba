@@ -28,6 +28,13 @@ const cookiePassKeyName = 'sakabapass';
 
 var hiddenKeyLi = {};
 
+const dummyProfile = {
+  "screen-name": 'ぶっち',
+  "facebook-url": 'https://www.facebook.com/yuuki.iwabuchi.9',
+  "twitter-id": 'butchi_y',
+  "message": 'はじめまして！',
+};
+
 function addHiddenKey(id) {
   let hiddenKey = hiddenKeyPuid.generate();
 
@@ -60,6 +67,10 @@ mongo_builder.ready(dbName, function(db){
 });
 
 app.all('/admin/*', basicAuth(function(user, password) {
+  return user === 'username' && password === 'password';
+}));
+
+app.all('/debug/*', basicAuth(function(user, password) {
   return user === 'username' && password === 'password';
 }));
 
@@ -132,6 +143,25 @@ app.post('/admin/updateuser', (req, res) => {
   }
 });
 
+app.get('/debug/index', (req, res) => {
+  res.render('index', {
+    userId: 'aBCd',
+    profile: dummyProfile,
+  });
+});
+
+app.get('/debug/profile', (req, res) => {
+  res.render('profile', {
+    profile: dummyProfile,
+  });
+});
+
+app.get('/debug/register', (req, res) => {
+  res.render('register', {
+    hiddenKey: '123',
+    profile: dummyProfile,
+  });
+});
 
 app.get('/', (req, res) => {
   var cookieUser;
