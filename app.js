@@ -152,7 +152,11 @@ app.get('/debug/index', (req, res) => {
 });
 
 app.get('/debug/profile', (req, res) => {
+  var url_parts = url.parse(req.url, true);
+  var query = url_parts.query;
+
   res.render('profile', {
+    kanpai: query.kanpai,
     profile: dummyProfile,
   });
 });
@@ -242,10 +246,14 @@ app.get('/user/:id', (req, res) => {
           });
         } else {
           if(user.profile) {
-              console.log('render: profile');
-              res.render('profile', {
-                profile: user.profile,
-              });
+            let url_parts = url.parse(req.url, true);
+            let query = url_parts.query;
+
+            console.log('render: profile');
+            res.render('profile', {
+              kanpai: query.kanpai,
+              profile: user.profile,
+            });
           } else {
             // 複数アカウントで新規登録画面を開くとここに飛んできてしまう
             res.render('error', {

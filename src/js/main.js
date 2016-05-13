@@ -59,7 +59,14 @@ $(() => {
   }
 
   if($body.hasClass('page-profile')) {
-    init();
+    let $animation = $body.find('.animation');
+    if($animation.length > 0) {
+      init();
+
+      setTimeout(() => {
+        $animation.closest('.aside').fadeOut(500);
+      }, 2000);
+    }
   }
 });
 

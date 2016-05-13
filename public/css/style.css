@@ -26,5 +26,28 @@ body .profile-block.mdl-card {
 body.page-profile .title {
   display: none; }
 
+body.page-profile .aside {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 10; }
+  body.page-profile .aside .animation {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 375px;
+    height: 375px;
+    margin-left: -187.5px;
+    margin-top: -187.5px; }
+    body.page-profile .aside .animation canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0; }
+
 body.page-register .title {
   display: none; }

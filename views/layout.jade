@@ -108,6 +108,7 @@ html(lang="ja")
         main.mdl-layout__content
           .page-content
             block main
+
         footer.mdl-mini-footer
           block footer
             .mdl-mini-footer__left-section
@@ -116,6 +117,9 @@ html(lang="ja")
               ul.mdl-mini-footer__link-list
                 li: a(href="/")
                   | Home
+
+    aside.aside
+      block aside
 
     block js
       script(src='/js/main.js')
