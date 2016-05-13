@@ -51,10 +51,10 @@ app.use(bodyParser());
 
 // ユーザーID確認
 mongo_builder.ready(dbName, function(db){
-  console.log(db);
+  console.log('db: ', db);
   db.collection('users', (err, collection) => {
     collection.find().toArray((err, items) => {
-      console.log(items);
+      console.log('items: ', items);
     });
   });
 });
@@ -380,17 +380,17 @@ app.post('/api/update', (req, res) => {
 //   app.use(express.errorHandler());
 // });
 
-io.configure(function () { 
-  io.set("transports", ["xhr-polling"]); 
-  io.set("polling duration", 10); 
-});
+// io.configure(function () { 
+//   io.set("transports", ["xhr-polling"]); 
+//   io.set("polling duration", 10); 
+// });
 
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
+// io.sockets.on('connection', function (socket) {
+//   socket.emit('news', { hello: 'world' });
+//   socket.on('my other event', function (data) {
+//     console.log(data);
+//   });
+// });
 
 server.listen(app.get('port'), host, function(){
   console.log("Express server listening on port " + app.get('port'));
