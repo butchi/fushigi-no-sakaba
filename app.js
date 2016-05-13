@@ -37,6 +37,7 @@ function addHiddenKey(id) {
 }
 
 app.set('port', process.env.PORT || 3000);
+console.log('port: ', process.env.PORT);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 // app.locals.basedir = app.get('views');　// Jade内で絶対パスで呼べない？
