@@ -39,29 +39,37 @@ block prepend js
     }
 
 block main
-  main
-    h1 プロフィール
+  .mdl-grid
+    .mdl-cell.mdl-cell--6-col
+      if locals.profile
+        h1.title プロフィール
 
-    if locals.profile
-      dl
-        dt 名前
-        dd= profile['screen-name']
+        .profile-block.mdl-card.mdl-shadow--2dp
+          .mdl-card__title.mdl-card--expand
+            h2.mdl-card__title-text
+              | プロフィール
+          .mdl-card__supporting-text
+            dl
+              if locals.profile
+                dt 名前
+                dd= profile['screen-name']
 
-        dt 自己紹介
-        dd= profile['message']
+                dt 自己紹介
+                dd= profile['message']
 
-      ul.sns
-        if profile['facebook-url']
-          li.item.facebook
-            a(href="#{profile['facebook-url']}")
-              | Facebook
-        if profile['twitter-id']
-          li.item.facebook
-            a(href="https://twitter.com/#{profile['twitter-id']}")
-              | Twitter
+          if profile['facebook-url'] || profile['twitter-id']
+            .mdl-card__actions.mdl-card--border
+              if profile['facebook-url']
+                .item.facebook
+                  a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="#{profile['facebook-url']}")
+                    | Facebook
+              if profile['twitter-id']
+                .item.facebook
+                  a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="https://twitter.com/#{profile['twitter-id']}")
+                    | Twitter
 
-    else
-      p ユーザーが登録されていません
+      else
+        p ユーザーが登録されていません
 
   .animation
     canvas(id="canvas", width="375", height="375")

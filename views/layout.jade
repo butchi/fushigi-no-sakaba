@@ -86,11 +86,11 @@ html(lang="ja")
     .wrapper
       //- Always shows a header, even in smaller screens.
       .mdl-layout.mdl-js-layout.mdl-layout--fixed-header
-        block header
-          .mdl-layout__header
+        .mdl-layout__header
+          block header
             .mdl-layout__header-row
               //- Title
-              span.mdl-layout-title Title
+              span.mdl-layout-title= title
               //- Add spacer, to align navigation to the right
               .mdl-layout-spacer
               // Navigation. We hide it in small screens.
@@ -98,17 +98,24 @@ html(lang="ja")
                 a.mdl-navigation__link(href="") Link
                 a.mdl-navigation__link(href="") Link
         .mdl-layout__drawer
-          .mdl-layout-title Title
+          .mdl-layout-title
+            | メニュー
           nav.mdl-navigation
-            a.mdl-navigation__link(href="") Link
-            a.mdl-navigation__link(href="") Link
-            a.mdl-navigation__link(href="") Link
-            a.mdl-navigation__link(href="") Link
-        block main
-          main.mdl-layout__content
-            .page-content
-        block footer
-          a(href='/') Home
+            a.mdl-navigation__link(href="/")
+              | Home
+            a.mdl-navigation__link(href="/about/")
+              | About
+        main.mdl-layout__content
+          .page-content
+            block main
+        footer.mdl-mini-footer
+          block footer
+            .mdl-mini-footer__left-section
+              .mdl-logo
+                | 不思議の酒場
+              ul.mdl-mini-footer__link-list
+                li: a(href="/")
+                  | Home
 
     block js
       script(src='/js/main.js')

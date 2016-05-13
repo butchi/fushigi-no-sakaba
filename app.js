@@ -2,6 +2,7 @@ var express = require('express');
 var http = require('http');
 var sockets = require('socket.io');
 var path = require('path');
+var url = require('url');
 
 var app = express();
 var server = http.createServer(app);
@@ -157,10 +158,19 @@ app.get('/debug/profile', (req, res) => {
 });
 
 app.get('/debug/register', (req, res) => {
-  res.render('register', {
-    hiddenKey: '123',
-    profile: dummyProfile,
-  });
+  var url_parts = url.parse(req.url, true);
+  var query = url_parts.query;
+
+  if(query.virgin) {
+    res.render('register', {
+      hiddenKey: '123',
+    });
+  } else {
+    res.render('register', {
+      hiddenKey: '123',
+      profile: dummyProfile,
+    });
+  }
 });
 
 app.get('/', (req, res) => {

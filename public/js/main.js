@@ -32,13 +32,27 @@ $(function () {
         url: $target.attr('action'),
         data: data,
         success: function success(res) {
-          console.log(200);
+          console.log('200: ', res);
           var err = res.error;
           $target.find('.item .message').text('');
+          $target.find('.item .input').removeClass('is-invalid');
           if (err) {
             Object.keys(err).forEach(function (key) {
               $target.find('[name="' + key + '"]').closest('.item').find('.message').text(err[key]);
+              $target.find('[name="' + key + '"]').closest('.input').addClass('is-invalid');
             });
+          } else {
+            (function () {
+              var dialog = document.querySelector('dialog');
+              if (!dialog.showModal) {
+                dialogPolyfill.registerDialog(dialog);
+              }
+
+              dialog.showModal();
+              dialog.querySelector('.close').addEventListener('click', function () {
+                dialog.close();
+              });
+            })();
           }
         },
         error: function error(res) {

@@ -11,12 +11,20 @@ body {
 main {
   display: block; }
 
-body.page-register [name="form-profile"] .note {
-  font-size: 12px;
-  font-size: 1.2rem;
-  color: #999; }
+body .title {
+  font-size: 24px; }
 
-body.page-register [name="form-profile"] .message {
-  font-size: 12px;
-  font-size: 1.2rem;
-  color: #f00; }
+body .profile-block.mdl-card {
+  background: #eef; }
+  body .profile-block.mdl-card .mdl-card__supporting-text dt {
+    margin-top: 20px; }
+    body .profile-block.mdl-card .mdl-card__supporting-text dt:first-child {
+      margin-top: 0; }
+  body .profile-block.mdl-card .mdl-card__supporting-text dd {
+    margin-top: 10px; }
+
+body.page-profile .title {
+  display: none; }
+
+body.page-register .title {
+  display: none; }

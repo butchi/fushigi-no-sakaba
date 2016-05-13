@@ -14,20 +14,44 @@ main {
   display: block;
 }
 
-body.page-register {
-    [name="form-profile"] {
-      .item
-        .title {
+body {
+  .title {
+    font-size: 24px;
+  }
+
+  .profile-block {
+    &.mdl-card {
+      background: #eef;
+
+      .mdl-card__supporting-text {
+        dt {
+          margin-top: 20px;
+          &:first-child {
+            margin-top: 0;
+          }
         }
-        .input {
+        dd {
+          margin-top: 10px;
         }
-        .note {
-          font-size: 1.2rem;
-          color: #999;
-        }
-        .message {
-          font-size: 1.2rem;
-          color: #f00;
-        }
+      }
     }
+  }
+
+  &.page-top {
+    // .title {
+    //   background-image: url(/);
+    // }
+  }
+
+  &.page-profile {
+    .title {
+      display: none;
+    }
+  }
+
+  &.page-register {
+    .title {
+      display: none;
+    }
+  }
 }

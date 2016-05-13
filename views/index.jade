@@ -5,29 +5,34 @@ block append vars
   - var pageId = 'top'
 
 block main
-  main
-    h1 不思議の酒場〜スマホで乾杯〜
+  .mdl-grid
+    .mdl-cell.mdl-cell--6-col
+      h1.title 不思議の酒場〜スマホで乾杯〜
 
-    dl
-      if locals.userId
-        dt ID
-        dd= userId
+      .profile-block.mdl-card.mdl-shadow--2dp
+        .mdl-card__title.mdl-card--expand
+          h2.mdl-card__title-text
+            | プロフィール
+        .mdl-card__supporting-text
+          dl
+            if locals.userId
+              dt ID
+              dd= userId
 
-      if locals.profile
-        dt 名前
-        dd= profile['screen-name']
+            if locals.profile
+              dt 名前
+              dd= profile['screen-name']
 
-        dt 自己紹介
-        dd= profile['message']
+              dt 自己紹介
+              dd= profile['message']
 
-    if locals.profile
-      ul.sns
-        if profile['facebook-url']
-          li.item.facebook
-            a(href="#{profile['facebook-url']}")
-              | Facebook
-        if profile['twitter-id']
-          li.item.facebook
-            a(href="https://twitter.com/#{profile['twitter-id']}")
-              | Twitter
-
+        if profile['facebook-url'] || profile['twitter-id']
+          .mdl-card__actions.mdl-card--border
+            if profile['facebook-url']
+              .item.facebook
+                a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="#{profile['facebook-url']}")
+                  | Facebook
+            if profile['twitter-id']
+              .item.facebook
+                a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="https://twitter.com/#{profile['twitter-id']}")
+                  | Twitter

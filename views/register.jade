@@ -2,54 +2,60 @@ extends layout
 
 block append vars
   - var pageId = 'register'
+  if locals.profile
+    - var title = 'プロフィール更新'
+  else
+    - var title = 'ユーザー登録'
 
 block main
-  main
-    h1 ユーザー登録
+  .mdl-grid
+    .mdl-cell.mdl-cell--6-col
+      if locals.profile
+        h1.title プロフィール更新
+        - var screenName = profile['screen-name']
+        - var facebookUrl = profile['facebook-url']
+        - var twitterId = profile['twitter-id']
+        - var message = profile['message']
+      else
+        h1.title ユーザー登録
 
-    if locals.profile
-      - var screenName = profile['screen-name']
-      - var facebookUrl = profile['facebook-url']
-      - var twitterId = profile['twitter-id']
-      - var message = profile['message']
-      p 更新
-    else
-      p 新規
-
-    form(method="POST", action="/api/update", name="form-profile")
-      input(type="hidden", name="hidden-key", value= hiddenKey)
-      div.item
-        .title
-          | 名前
-        .input
-          input(type="text", name="screen-name", placeholder="名前", value= screenName)
-        .note
-          | （必須）
-        .message
-      div.item
-        .title
-          | Facebookアカウント（URL）
-        .input
-          input(type="text", name="facebook-url", placeholder="https://www.facebook.com/sakaba.taro", value= facebookUrl)
-        .note
-          | （任意）
-        .message
-      div.item
-        .title
-          | Twitterアカウント（ID）
-        .input
-          | @
-          input(type="text", name="twitter-id", placeholder="sakaba_taro", value= twitterId)
-        .note
-          | （任意）
-        .message
-      div.item
-        .title
-          | 自己紹介
-        .input
-          textarea(name="message", placeholder="自己紹介文")= message
-        .note
-          | （必須）
-        .message
-      div.submit
-        input(type="submit", value="登録")
+      form(method="POST", action="/api/update", name="form-profile")
+        input(type="hidden", name="hidden-key", value= hiddenKey)
+        div.mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label.item
+          .mdl-textfield.mdl-js-textfield.input
+            label.mdl-textfield__label
+              | 名前
+            input.mdl-textfield__input(type="text", name="screen-name", placeholder="さかばー", value= screenName)
+            .mdl-textfield__error.message
+        div.mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label.item
+          .mdl-textfield.mdl-js-textfield.input
+            label.mdl-textfield__label
+              | Facebookアカウント（URL）
+            input.mdl-textfield__input(type="text", name="facebook-url", placeholder="https://www.facebook.com/sakaba.taro", value= facebookUrl)
+            .mdl-textfield__error.message
+        div.mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label.item
+          .mdl-textfield.mdl-js-textfield.input
+            label.mdl-textfield__label
+              | Twitterアカウント（IDの"@"以降）
+            input.mdl-textfield__input(type="text", name="twitter-id", placeholder="sakaba_taro", value= twitterId)
+            .mdl-textfield__error.message
+        div.mdl-textfield.mdl-js-textfield.mdl-textfield--floating-label.item
+          .mdl-textfield.mdl-js-textfield.input
+            label.mdl-textfield__label
+              | 自己紹介
+            textarea.mdl-textfield__input#message(name="message", placeholder="自己紹介文")= message
+            label.mdl-textfield__label(for="message")
+            .mdl-textfield__error.message
+        div.submit
+          button.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(type="submit")
+            if locals.profile
+              | 更新
+            else
+              | 登録
+      dialog.mdl-dialog
+        .mdl-dialog__content
+          p
+            更新しました
+        .mdl-dialog__actions
+          button.mdl-button.close(type="button)
+            | OK
