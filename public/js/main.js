@@ -61,6 +61,12 @@ $(function () {
       init();
     }
   }
+
+  if ($body.hasClass('page-kanpaist')) {
+    setTimeout(function () {
+      location.reload();
+    }, 30000);
+  }
 });
 
 console.log('Thanks, world!');
