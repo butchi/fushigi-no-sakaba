@@ -253,6 +253,24 @@ app.get('/user/:id', (req, res) => {
             let url_parts = url.parse(req.url, true);
             let query = url_parts.query;
 
+            mongo_builder.ready(dbName, function(db){
+              db.collection('users', (err, collection) => {
+                collection.find({id: cookieUser}).toArray((err, items) => {
+                  let kanpaiFriendArr = (items[0] || {}).kanpaiFriendArr || [];
+                  console.log('before:', kanpaiFriendArr);
+                  kanpaiFriendArr = _.union(kanpaiFriendArr, [user.id]);
+                  console.log('after:', kanpaiFriendArr);
+                  mongo_builder.ready(dbName, function(db){
+                    db.collection('users', (err, collection) => {
+                      collection.update({id: cookieUser}, { $set: {kanpaiFriendArr: kanpaiFriendArr} }, (err, result) => {
+                        // console.dir(result);
+                      });
+                    });
+                  });
+                });
+              });
+            });
+
             console.log('render: profile');
             res.render('profile', {
               kanpai: query.kanpai,
