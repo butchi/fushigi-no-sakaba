@@ -71,7 +71,8 @@ block main
       else
         p ユーザーが登録されていません
 
-if locals.kanpai
-  block aside
-    .animation
-      canvas(id="canvas", width="375", height="375")
+block aside
+  if locals.kanpai
+    aside.aside
+      .animation
+        canvas(id="canvas", width="375", height="375")= typeof kanpai
