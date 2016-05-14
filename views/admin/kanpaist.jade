@@ -5,14 +5,18 @@ block append vars
   - var title = 'カンパイストランキング'
 
 block main
+  - var i = 0;
   .mdl-grid
     .mdl-cell.mdl-cell--12-col
       table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
         tr
-          th.mdl-data-table__cell--non-numeric 名前
+          th 順位
+          th 名前
           th カンパイフレンド数
         each user in users
           if user.profile
+            - i++;
             tr
+              td #{i}位
               td.mdl-data-table__cell--non-numeric= user.profile['screen-name']
               td= (user.kanpaiFriendArr || []).length
