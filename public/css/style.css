@@ -45,6 +45,12 @@ body.page-top .title {
 body.page-profile .title {
   display: none; }
 
+body.page-profile .tweet {
+  margin-top: 20px; }
+  body.page-profile .tweet .mdl-button {
+    color: white;
+    background-color: #248de2; }
+
 body.page-profile .aside {
   position: absolute;
   left: 0;

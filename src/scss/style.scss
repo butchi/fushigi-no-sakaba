@@ -76,6 +76,16 @@ body {
       display: none;
     }
 
+    .tweet {
+      margin-top: 20px;
+
+      .mdl-button {
+        color: white;
+
+        background-color: #248de2;
+      }
+    }
+
     .aside {
       position: absolute;
 

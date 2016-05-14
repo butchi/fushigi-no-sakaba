@@ -68,6 +68,11 @@ block main
                     a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="https://twitter.com/#{profile['twitter-id']}", target="_blank")
                       i.fa.fa-twitter.fa-fw
 
+        .tweet
+          a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect.twitter-share-button(href="https://twitter.com/intent/tweet?text=#{encodeURI(profile['screen-name'] + 'と乾杯しました&#127867;')}&hashtags=#{encodeURI('CreativeAdventure,不思議の酒場')}", target="_blank")
+            i.fa.fa-twitter.fa-fw
+            | ツイート
+
       else
         p ユーザーが登録されていません
 
