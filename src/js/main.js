@@ -56,10 +56,6 @@ $(() => {
     let $animation = $body.find('.animation');
     if($animation.length > 0) {
       init();
-
-      setTimeout(() => {
-        $animation.closest('.aside').fadeOut(500);
-      }, 5000);
     }
   }
 });

@@ -56,16 +56,10 @@ $(function () {
   }
 
   if ($body.hasClass('page-profile')) {
-    (function () {
-      var $animation = $body.find('.animation');
-      if ($animation.length > 0) {
-        init();
-
-        setTimeout(function () {
-          $animation.closest('.aside').fadeOut(500);
-        }, 5000);
-      }
-    })();
+    var $animation = $body.find('.animation');
+    if ($animation.length > 0) {
+      init();
+    }
   }
 });
 
