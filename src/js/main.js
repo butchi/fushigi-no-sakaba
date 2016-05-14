@@ -58,6 +58,12 @@ $(() => {
       init();
     }
   }
+
+  if($body.hasClass('page-kanpaist')) {
+    setTimeout(() => {
+      location.reload();
+    }, 30000);
+  }
 });
 
 console.log('Thanks, world!');
