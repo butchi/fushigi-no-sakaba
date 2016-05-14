@@ -1,0 +1,19 @@
+extends layout
+
+block append vars
+  - var pageId = 'about'
+  - var title = 'このサイトについて'
+
+block main
+  .mdl-grid
+    .mdl-cell.mdl-cell--6-col
+      h1.title このサイトについて
+
+      p
+        | 本コンテンツは、
+        a(href="http://cr6ad7.net") Creative Adventure
+        | 内イベント「不思議の酒場」の特設コンテンツです。
+      p
+        | 「乾杯」の新しい体験をお楽しみいただくとともに、
+        br
+        | いろんな人と乾杯しましょう。
