@@ -23,6 +23,15 @@ body .profile-block.mdl-card {
       margin-top: 0; }
   body .profile-block.mdl-card .mdl-card__supporting-text dd {
     margin-top: 10px; }
+  body .profile-block.mdl-card .list-sns {
+    margin-top: 20px; }
+    body .profile-block.mdl-card .list-sns .item .mdl-button {
+      width: 50px;
+      color: #fff;
+      font-size: 20px;
+      background-color: #006; }
+    body .profile-block.mdl-card .list-sns .item + .item {
+      margin-left: 10px; }
 
 body.page-top .title {
   text-indent: -9999px;
@@ -35,15 +44,6 @@ body.page-top .title {
 
 body.page-profile .title {
   display: none; }
-
-body.page-profile .list-sns {
-  margin-top: 20px; }
-  body.page-profile .list-sns .item .mdl-button {
-    width: 50px;
-    color: #fff;
-    background-color: #006; }
-  body.page-profile .list-sns .item + .item {
-    margin-left: 10px; }
 
 body.page-profile .aside {
   position: absolute;
