@@ -8,6 +8,7 @@ body {
   font-size: 14px;
   font-size: 1.4rem; }
 
+1
 main {
   display: block; }
 
@@ -60,3 +61,8 @@ body.page-profile .aside {
 
 body.page-register .title {
   display: none; }
+
+body.page-register .dialog {
+  display: none; }
+  body.page-register .dialog.show {
+    display: block; }

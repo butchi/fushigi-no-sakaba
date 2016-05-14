@@ -9,7 +9,7 @@ html {
 body {
   font-size: 1.4rem;
 }
-
+1
 main {
   display: block;
 }
@@ -101,6 +101,14 @@ body {
   &.page-register {
     .title {
       display: none;
+    }
+
+    .dialog {
+      display: none;
+
+      &.show {
+        display: block;
+      }
     }
   }
 }
