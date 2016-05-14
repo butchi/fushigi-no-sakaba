@@ -71,7 +71,7 @@ $(function () {
 
         setTimeout(function () {
           $animation.closest('.aside').fadeOut(500);
-        }, 2000);
+        }, 5000);
       }
     })();
   }
