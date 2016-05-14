@@ -57,6 +57,22 @@ body {
       display: none;
     }
 
+    .list-sns {
+      margin-top: 20px;
+
+      .item {
+        .mdl-button {
+          width: 50px;
+          color: #fff;
+          background-color: #006;
+        }
+
+        + .item {
+          margin-left: 10px;
+        }
+      }
+    }
+
     .aside {
       position: absolute;
 

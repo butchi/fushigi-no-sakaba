@@ -36,6 +36,15 @@ body.page-top .title {
 body.page-profile .title {
   display: none; }
 
+body.page-profile .list-sns {
+  margin-top: 20px; }
+  body.page-profile .list-sns .item .mdl-button {
+    width: 50px;
+    color: #fff;
+    background-color: #006; }
+  body.page-profile .list-sns .item + .item {
+    margin-left: 10px; }
+
 body.page-profile .aside {
   position: absolute;
   left: 0;

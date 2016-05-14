@@ -58,14 +58,15 @@ block main
                 dd= profile['message']
 
             if profile['facebook-url'] || profile['twitter-id']
-              if profile['facebook-url']
-                .item.facebook
-                  a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="#{profile['facebook-url']}", target="_blank")
-                    | Facebook
-              if profile['twitter-id']
-                .item.facebook
-                  a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="https://twitter.com/#{profile['twitter-id']}", target="_blank")
-                    | Twitter
+              div.list-sns
+                if profile['facebook-url']
+                  span.item.facebook
+                    a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="#{profile['facebook-url']}", target="_blank")
+                      i.fa.fa-facebook.fa-fw
+                if profile['twitter-id']
+                  span.item.facebook
+                    a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href="https://twitter.com/#{profile['twitter-id']}", target="_blank")
+                      i.fa.fa-twitter.fa-fw
 
       else
         p ユーザーが登録されていません
