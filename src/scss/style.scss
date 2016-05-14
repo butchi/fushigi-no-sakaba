@@ -38,9 +38,18 @@ body {
   }
 
   &.page-top {
-    // .title {
-    //   background-image: url(/);
-    // }
+    .title {
+      text-indent: -9999px;
+      width: 100%;
+      height: 100px;
+      background-image: url(/img/fushiginosakaba.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+    }
+  }
+
+  &.page-about {
   }
 
   &.page-profile {

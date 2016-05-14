@@ -23,6 +23,15 @@ body .profile-block.mdl-card {
   body .profile-block.mdl-card .mdl-card__supporting-text dd {
     margin-top: 10px; }
 
+body.page-top .title {
+  text-indent: -9999px;
+  width: 100%;
+  height: 100px;
+  background-image: url(/img/fushiginosakaba.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50% 50%; }
+
 body.page-profile .title {
   display: none; }
 
