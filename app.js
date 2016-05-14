@@ -91,6 +91,21 @@ app.get('/admin/list', (req, res) => {
   };
 });
 
+app.get('/admin/kanpaist', (req, res) => {
+  mongo_builder.ready(dbName, function(db){
+    db.collection('users', (err, collection) => {
+      collection.find().toArray(findUserCallback);
+    });
+  });
+
+  let findUserCallback = (err, items) => {
+    let sortedItems = _.sortBy(items, 'kanpaiFriendArr');
+    res.render('admin/kanpaist', {
+      users: sortedItems,
+    });
+  };
+});
+
 app.post('/admin/adduser', (req, res) => {
   var users = req.body['users'];
 
@@ -196,7 +211,7 @@ app.get('/', (req, res) => {
   let findUserCallback = (err, items) => {
     let user = items[0];
 
-    if(user && cookiePass && cookiePass === user.cookiePass) {
+    if(user && cookiePass && (cookiePass === user.cookiePass)) {
       if(user.profile) {
         console.log('render: top');
         res.render('index', {
@@ -332,6 +347,56 @@ app.get('/user/:id', (req, res) => {
     }
   }
 
+});
+
+app.get('/friends', (req, res) => {
+  var cookieUser;
+  var cookiePass;
+
+  try {
+    cookieUser = cookie.parse(req.headers.cookie)[cookieUserKeyName];
+    cookiePass = cookie.parse(req.headers.cookie)[cookiePassKeyName];
+  } catch(e) {
+  }
+
+  mongo_builder.ready(dbName, function(db){
+    db.collection('users', (err, collection) => {
+      collection.find({id: cookieUser}).toArray(findUserCallback);
+    });
+  });
+
+  let findUserCallback = (err, items) => {
+    let user = items[0];
+
+    if(user && cookiePass && (cookiePass === user.cookiePass)) {
+      if(user.kanpaiFriendArr) {
+        let conditionArr = [];
+        user.kanpaiFriendArr.forEach((friendId) => {
+          conditionArr.push({
+            id: friendId,
+          });
+        });
+
+        mongo_builder.ready(dbName, function(db){
+          db.collection('users', (err, collection) => {
+            collection.find({$or: conditionArr}).toArray(findFriendCallback);
+          });
+        });
+
+        let findFriendCallback = (err, items) => {
+          res.render('friends', {
+            users: items,
+          });
+        };
+      } else {
+        res.render('friends', {
+          users: [],
+        });
+      }
+    } else {
+      res.render('error');
+    }
+  };
 });
 
 app.get('/delete/:id', (req, res) => {

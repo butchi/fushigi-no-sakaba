@@ -1,0 +1,18 @@
+extends ../layout
+
+block append vars
+  - var pageId = 'kanpaist'
+  - var title = 'カンパイストランキング'
+
+block main
+  .mdl-grid
+    .mdl-cell.mdl-cell--12-col
+      table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
+        tr
+          th.mdl-data-table__cell--non-numeric 名前
+          th カンパイフレンド数
+        each user in users
+          if user.profile
+            tr
+              td.mdl-data-table__cell--non-numeric= user.profile['screen-name']
+              td= (user.kanpaiFriendArr || []).length

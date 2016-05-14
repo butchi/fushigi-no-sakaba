@@ -1,0 +1,21 @@
+extends layout
+
+block append vars
+  - var pageId = 'friends'
+  - var title = 'カンパイフレンド一覧'
+
+block main
+  .mdl-grid
+    .mdl-cell.mdl-cell--6-col
+
+    if users.length > 0
+      ul.mdl-list
+        each user in users
+          if user.profile
+            li.mdl-list__item
+              span.mdl-list__item-primary-content
+                i.material-icons.mdl-list__item-icon
+                  | person
+                a(href="/user/#{user.id}")= user.profile['screen-name']
+    else
+      p まだカンパイフレンドがいません。みんなと乾杯しましょう。
