@@ -84,7 +84,7 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 	this.instance_8 = new lib.beer_left_1("synched",0);
 	this.instance_8.setTransform(-50,200.1,1,1,0,0,0,43.5,47.8);
 
-	this.timeline.addTween(cjs.Tween.get(this.instance_8).to({x:145},9,cjs.Ease.get(-0.75)).to({regX:43.6,rotation:-15,x:125.1,y:180},5).to({x:105.1,y:190},5).wait(30)).call(function() {$('.animation').closest('.aside').fadeOut(500)});
+	this.timeline.addTween(cjs.Tween.get(this.instance_8).to({x:145},9,cjs.Ease.get(-0.75)).to({regX:43.6,rotation:-15,x:125.1,y:180},5).to({x:105.1,y:190},5).wait(30)).call(function() {$('.animation').closest('.aside').fadeOut(500);});
 
 }).prototype = p = new cjs.MovieClip();
 p.nominalBounds = new cjs.Rectangle(94,339.8,556.8,96.2);
