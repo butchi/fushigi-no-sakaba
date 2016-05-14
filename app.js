@@ -378,7 +378,7 @@ app.post('/api/update', (req, res) => {
   }
 
   function isValidFacebookUrl(str) {
-    return !!str.match(/https:\/\/www\.facebook\.com\/+/i);
+    return !!str.match(/https:\/\/.+\.facebook\.com\/+/i);
   }
 
   var screenName = req.body['screen-name'];
