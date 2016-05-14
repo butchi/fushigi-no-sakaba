@@ -289,7 +289,13 @@ app.get('/user/:id', (req, res) => {
 
             console.log(serializedCookieUser, serializedCookiePass);
 
-            user.joinedAt = Date.now();
+            mongo_builder.ready(dbName, function(db){
+              db.collection('users', (err, collection) => {
+                collection.update({id: user.id}, { $set: {joinedAt: Date.now()} }, (err, result) => {
+                  // console.dir(result);
+                });
+              });
+            });
 
             res.setHeader("Set-Cookie", [
               serializedCookieUser,
