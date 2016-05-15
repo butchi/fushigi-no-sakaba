@@ -99,7 +99,9 @@ app.get('/admin/kanpaist', (req, res) => {
   });
 
   let findUserCallback = (err, items) => {
-    let sortedItems = _.sortBy(items, 'kanpaiFriendArr');
+    let sortedItems = _.sortBy(items, function(item){
+      return - (item.kanpaiFriendArr || []).length;
+    });
     res.render('admin/kanpaist', {
       users: sortedItems,
     });
